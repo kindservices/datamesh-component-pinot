@@ -1,0 +1,43 @@
+<html>
+<style>
+form  { display: table;      }
+p     { display: table-row;  }
+label { display: table-cell; padding: 1em }
+input { display: table-cell; }
+</style>
+<script>
+    async function postData(url = "", data = {}) {
+
+      const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-cache",
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      console.log("got: " + response);
+      return response.json();
+    }
+
+    async function test() {
+      var conn = document.getElementById("conn");
+      var query = document.getElementById("query");
+      var resp = await postData("/test", {
+        "conn" : conn.value,
+        "query" : query.value
+      });
+      var results = document.getElementById("results");
+      results.innerText = resp;
+    }
+</script>
+<body>
+<h2>Test page</h2>
+<form>
+    <p><label for="conn">Host port:</label><input id="conn" type="text" value="pinot-zookeeper.pinotdb:2181/DefaultTenant" style="width:400px"/></p>
+    <p><label for="query">Query: </label><input id="query" type="text"  style="width:400px" value="select * from airlineStats limit 10"/></p>
+    <input type="button" value="Test" onclick=" test()">
+    <div id="results"></div>
+</form>
+</body>
+</html>
