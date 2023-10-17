@@ -1,0 +1,10 @@
+.idea
+kill.sh
+node_modules
+.svelte-kit/generated
+.scala-build
+.bsp
+*.jar
+.DS_Store
+.metals
+.vscode
