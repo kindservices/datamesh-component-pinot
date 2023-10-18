@@ -51,6 +51,12 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     #https://github.com/docker/build-push-action    
+    - name: Debug step
+      working-directory: ./server
+      run: |
+        pwd
+        echo "contents"
+        ls -Alrth
     - name: Build if Branch
       if: github.ref != 'refs/heads/main'
       uses: docker/build-push-action@v5
@@ -63,7 +69,7 @@ jobs:
     runs-on: ubuntu-latest
     needs:  build-docker
     steps:
-    - name: Build if Main
+    - name: Optional Push
       if: github.ref == 'refs/heads/main'
       uses: docker/build-push-action@v5
       with:
