@@ -19,8 +19,6 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
     - uses: coursier/cache-action@v6.3
     - uses: VirtusLab/scala-cli-setup@v0.1
     - name: Scalafmt check
@@ -35,6 +33,11 @@ jobs:
     - name: Build App
       working-directory: ./server
       run: make buildLocally
+  build-docker:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v1
     - name: Set up QEMU
       uses: docker/setup-qemu-action@v3
     - name: Set up Docker Buildx
@@ -55,6 +58,9 @@ jobs:
         platforms: linux/amd64
         push: false
         tags: ${{ env.REGISTRY_IMAGE }}:${{github.run_number}}
+  push-if-main:
+    runs-on: ubuntu-latest
+    steps:
     - name: Build if Main
       if: github.ref == 'refs/heads/main'
       uses: docker/build-push-action@v5
