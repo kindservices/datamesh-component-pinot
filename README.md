@@ -1,2 +1,4 @@
-# idealab-component-svelte
-An example component written in svelte
+# about
+This component displays a simple dashboard from an apache pinot data source
+
+
