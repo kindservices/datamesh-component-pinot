@@ -23,6 +23,11 @@ jobs:
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
+    - name: Debug step
+      run: |
+        pwd
+        echo "contents"
+        ls -Alrth
     - uses: coursier/cache-action@v6.3
     - uses: VirtusLab/scala-cli-setup@v0.1
     - name: Scalafmt check
@@ -52,12 +57,7 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    #https://github.com/docker/build-push-action    
-    - name: Debug step
-      run: |
-        pwd
-        echo "contents"
-        ls -Alrth
+    #https://github.com/docker/build-push-action
     - name: Build if Branch
       if: github.ref != 'refs/heads/main'
       uses: docker/build-push-action@v5
