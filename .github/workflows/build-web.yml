@@ -12,7 +12,7 @@ env:
   REGISTRY_IMAGE: kindservices/datamesh-component-pinot-web
       
 jobs:
-  build-client:
+  build-web:
     runs-on: ubuntu-latest
 
     steps:
