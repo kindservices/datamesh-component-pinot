@@ -43,7 +43,7 @@ installArgo() {
     echo "creating $APP"
     
     kubectl create namespace data-mesh || echo "couldn't create data-mesh namespace"
-    
+
     # beast mode :-)
     argocd app create $APP \
     --repo https://github.com/kindservices/datamesh-component-pinot.git \

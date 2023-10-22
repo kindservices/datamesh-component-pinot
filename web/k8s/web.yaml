@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pinot-component-web
-        image: kindservices/pinot-component-web:0.0.1
+        image: kindservices/datamesh-component-pinot-web:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -37,7 +37,7 @@ spec:
             memory: "128Mi"
             cpu: "500m"
       - name: pinot-registry-sidecar
-        image: kindservices/service-registry-client:latest
+        image: kindservices/datamesh-service-registry-client:latest
         imagePullPolicy: Always
         env:
           - name: HOSTPORT

@@ -27,7 +27,7 @@ installArgo() {
     BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
     
     kubectl create namespace data-mesh || echo "couldn't create data-mesh namespace"
-    
+
     argocd app create $APP \
     --repo https://github.com/kindservices/datamesh-component-pinot.git \
     --path server/k8s \
