@@ -16,9 +16,8 @@ COPY --from=build /app/public /usr/share/nginx/html
 
 EXPOSE 3000
 
-# svelte will create random IDs for our gnerated components, e.g. "dist/assets/index-65be3931.css"
-# we rename in our build for conssitent IDs
-COPY --from=build /app/dist/assets/svelte-*.svg /usr/share/nginx/html/assets/svelte.svg
-COPY --from=build /app/dist/assets/index-*.css /usr/share/nginx/html/bundle.css
-COPY --from=build /app/dist/assets/index-*.js /usr/share/nginx/html/bundle.js
-COPY --from=build /app/dist/index.html /usr/share/nginx/html/index.html
+# yarn run build executes a rollup configured to write assets to target/assets
+COPY --from=build /app/target/assets/svg/svelte.svg /usr/share/nginx/html/assets/svelte.svg
+COPY --from=build /app/target/assets/css/index.css /usr/share/nginx/html/bundle.css
+COPY --from=build /app/target/assets/js/bundle.js /usr/share/nginx/html/bundle.js
+COPY --from=build /app/target/index.html /usr/share/nginx/html/index.html
