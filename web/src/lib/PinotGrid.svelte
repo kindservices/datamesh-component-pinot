@@ -1,7 +1,7 @@
-<svelte:options tag="my-card" />
+<svelte:options tag="pinot-grid" />
 
 <script>
-  import Counter from "./Counter.svelte";
+  import Counter from "./PinotCounter.svelte";
     // component props
     // Camel case not supported for props, see drawback section.
     export let card_title, card_desc;
@@ -24,6 +24,10 @@
   </main>
   
   <style>
+    .card-container {
+      margin: 20px;
+      padding: 20px
+    }
    .card {
       max-width: 350px;
       border-radius: 5px;

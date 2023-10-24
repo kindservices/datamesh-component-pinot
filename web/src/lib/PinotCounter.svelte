@@ -1,4 +1,4 @@
-<svelte:options tag="my-counter" />
+<svelte:options tag="pinot-counter" />
 
 <script lang="ts">
   let count: number = 0
@@ -8,5 +8,5 @@
 </script>
 
 <button on:click={increment}>
-  clicks: {count}
+  pinot clicks: {count}
 </button>
