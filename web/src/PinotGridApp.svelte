@@ -6,7 +6,7 @@
 
 <main>
   <div class="card">
-    <PinotGrid card_title="web component main app" card_desc="whatever" />
+    <PinotGrid card_title="card title goes here" card_desc="some description" />
   </div>
 
 </main>

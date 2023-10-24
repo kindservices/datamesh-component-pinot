@@ -8,5 +8,5 @@
 </script>
 
 <button on:click={increment}>
-  clicks: {count}
+  pinot clicks: {count}
 </button>

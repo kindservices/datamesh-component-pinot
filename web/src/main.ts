@@ -6,7 +6,6 @@ import PinotGridApp from './PinotGridApp.svelte'
  * 
  * so ... 
  */
-import Card from "./lib/PinotCard.svelte";
 
 const pinotGridApp = new PinotGridApp({
   target: document.getElementById('webcomponent-app'),

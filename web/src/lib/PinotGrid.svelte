@@ -24,6 +24,10 @@
   </main>
   
   <style>
+    .card-container {
+      margin: 20px;
+      padding: 20px
+    }
    .card {
       max-width: 350px;
       border-radius: 5px;
