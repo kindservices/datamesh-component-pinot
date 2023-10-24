@@ -1,4 +1,4 @@
-<svelte:options tag="my-counter" />
+<svelte:options tag="pinot-counter" />
 
 <script lang="ts">
   let count: number = 0
