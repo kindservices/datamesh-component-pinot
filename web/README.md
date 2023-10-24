@@ -1,17 +1,17 @@
 # About
 
-this is a svelte component which gets consumed by a container.
+This project showcases an apache pinot source and sink.
 
-It exposes a 'bundle.js' and 'bundle.css' which can be imported at runtime from a host container which provide the components:
-
-## my-card
- * [my-card](./src/lib/Card.svelte)
- * [my-counter](./src/lib/Counter.svelte)
- * [my-button](./src/lib/Button.svelte)
-
-See the [Makefile](./Makefile) for build targets
+## TODO
+ [ ] get apache pinot installed on k8s (by hook or by crookes) as a Make target
+     out of scope for now: doing this via argo
+ [ ] create a 'test' web component which can push data into pinot
+     next: can we do this via kafka?
+ [ ] create a dashboard web component w/ websocket to graph the data coming out of pinot
+ 
 
 ## Running / Testing 
+See the [Makefile](./Makefile) for build targets
 
 To test locally, you can use `make run`, then open either [a static test page](./test/local-test.html) or a [dynamic load](./test/dynamic-test.html) in your browser
 
