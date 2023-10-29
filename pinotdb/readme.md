@@ -1,32 +1,35 @@
-# Pinto
+# Pinot
 
-# Local Links
- * [pinot dashboard](http://localhost:9000/#/query?query=select+*+from+airlineStats+limit+10&tracing=false&useMSE=false)
+This piece is for installing pinotDB .
 
- * [java client](https://docs.pinot.apache.org/users/clients/java)
- * [superset](https://superset.apache.org/)
+You can use `make installArgo` which will deploy pinot to your cluster:
 
-## Installing
-Install via [the docs](https://docs.pinot.apache.org/basics/getting-started/kubernetes-quickstart):
+![Argo Pinot](argoPinot.png)
+
+
+# Appendex - the steps I followed
+
+As per the docs:
 
 ```
 helm repo add pinot https://raw.githubusercontent.com/apache/pinot/master/kubernetes/helm
-kubectl create ns pinotdb
+kubectl create ns pinot-quickstart
 helm install pinot pinot/pinot \
-    -n pinotdb \
+    -n pinot-quickstart \
     --set cluster.name=pinot \
     --set server.replicaCount=2
 ```
 
-Actually - just follow the rest of that README. currently I've got it running locally via
+
+We reference the main helm chart as per [here](https://blog.devops.dev/stop-cloning-helm-charts-enough-b40fb5d67ac7)
+
 ```
-http://localhost:9000/#/query?query=select+*+from+airlineStats+limit+10&tracing=false&useMSE=false
+helm create data-mesh-pinot
+# added dependency on pinot chart
+helm repo update
+helm dependency update
+
+# then
+helm install data-mesh-pinot .
 ```
-
-after ingesting from local kafka:
-
-
-![kubectl get all -n pinotdb](./k8s-pinot.png)
-
-
 

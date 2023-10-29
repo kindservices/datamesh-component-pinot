@@ -1,0 +1,56 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-rest-proxy
+spec:
+  selector:
+    app: kafka-rest-proxy
+  ports:
+    - protocol: TCP
+      port: 8082
+      targetPort: 8082
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kafka-rest-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kafka-rest-proxy
+  template:
+    metadata:
+      labels:
+        app: kafka-rest-proxy
+    spec:
+      containers:
+        - name: kafka-rest-proxy
+          image: confluentinc/cp-kafka-rest:latest
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          env:
+            - name: KAFKA_REST_BOOTSTRAP_SERVERS
+              value: "kafka-service:9092"  # Replace with your Kafka bootstrap servers
+            - name: KAFKA_REST_LISTENERS
+              value: "http://0.0.0.0:8082"
+            # Add more environment variables as needed
+
+---
+# Optionally, you may create a ConfigMap for additional configuration
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-rest-proxy-config
+data:
+  # Your additional configuration files or properties go here
+  # For example, you might have a server.properties file
+  server.properties: |
+    # Add your custom Kafka REST Proxy configurations here
+    # For example:
+    # confluent.support.metrics.enable=false

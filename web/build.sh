@@ -42,7 +42,7 @@ installArgo() {
 
     echo "creating $APP"
     
-    kubectl create namespace data-mesh || echo "couldn't create data-mesh namespace"
+    kubectl create namespace data-mesh 2> /dev/null
 
     # beast mode :-)
     argocd app create $APP \
