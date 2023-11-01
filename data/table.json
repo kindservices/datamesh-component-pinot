@@ -1,0 +1,45 @@
+{
+    "tableName": "user-tracking-data",
+    "tableType": "REALTIME",
+    "segmentsConfig": {
+      "timeColumnName": "timestampInEpoch",
+      "timeType": "MILLISECONDS",
+      "schemaName": "user-tracking-schema",
+      "replicasPerPartition": "1"
+    },
+    "tenants": {},
+    "tableIndexConfig": {
+      "loadMode": "MMAP",
+      "streamConfigs": {
+        "streamType": "kafka",
+        "stream.kafka.consumer.type": "lowlevel",
+        "stream.kafka.topic.name": "user-tracking-data",
+        "stream.kafka.decoder.class.name": "org.apache.pinot.plugin.stream.kafka.KafkaJSONMessageDecoder",
+        "stream.kafka.consumer.factory.class.name": "org.apache.pinot.plugin.stream.kafka20.KafkaConsumerFactory",
+        "stream.kafka.broker.list": "kafka:9092",
+        "realtime.segment.flush.threshold.rows": "0",
+        "realtime.segment.flush.threshold.time": "24h",
+        "realtime.segment.flush.threshold.segment.size": "50M",
+        "stream.kafka.consumer.prop.auto.offset.reset": "smallest"
+      },
+      "jsonIndexColumns": [
+        "headers_json",
+        "queryParams_json"
+      ]
+    },
+    "ingestionConfig": {
+      "transformConfigs": [
+        {
+          "columnName": "headers_json",
+          "transformFunction": "jsonFormat(headers)"
+        },
+        {
+          "columnName": "queryParams_json",
+          "transformFunction": "jsonFormat(queryParams)"
+        }
+      ]
+    },
+    "metadata": {
+      "customConfigs": {}
+    }
+  }
