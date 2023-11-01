@@ -1,0 +1,14 @@
+apiVersion: v2
+name: data-mesh-pinot
+description: A Helm chart for Pinot
+
+type: application
+
+version: 0.0.1
+
+appVersion: "0.2.7"
+
+dependencies:
+  - name: pinot
+    version: 0.2.7
+    repository: https://raw.githubusercontent.com/apache/pinot/master/helm

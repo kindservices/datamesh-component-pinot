@@ -1,0 +1,2 @@
+installArgo:
+	. ./build.sh && installArgo

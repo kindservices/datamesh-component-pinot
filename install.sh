@@ -4,6 +4,19 @@ thisDir=$(cd `dirname $0` && pwd)
 serverDir="$thisDir/server"
 webDir="$thisDir/web"
 
+
+pushd "$thisDir/kafka"
+echo "============== installing kafka in `pwd` =============="
+make installArgo
+popd
+
+
+pushd "$thisDir/pinotdb"
+echo "============== installing pinot in `pwd` =============="
+make installArgo
+popd
+
+
 pushd "$serverDir"
 echo "============== installing server in `pwd` =============="
 make installArgo
