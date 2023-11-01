@@ -6,9 +6,9 @@
 With kafka running, you can use k9s to select a kafka broker and choose `s` to open a shell, followed by:
 
 ```
-kafka-topics --create --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1 --topic example-topic
+kafka-topics --create --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1 --topic user-tracking-data
 
-kafka-console-consumer --bootstrap-server localhost:9092 --topic example-topic
+kafka-console-consumer --bootstrap-server localhost:9092 --topic user-tracking-data
 ```
 
 And now publish some messages:
@@ -30,6 +30,6 @@ import socket
 conf = {"bootstrap.servers": "kafka-service:9092", "client.id": socket.gethostname()}
 
 producer = Producer(conf)
-producer.produce("example-topic", key="message", value="message_from_python_producer")
+producer.produce("user-tracking-data", key="message", value="message_from_python_producer")
 ```
 

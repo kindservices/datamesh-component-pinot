@@ -1,8 +1,12 @@
 <svelte:options tag="kafka-test-widget" />
-<script>
+<script type="ts">
     import {kafkaHost} from './settings'
     export let topic = 'example-topic';
-    export let message = '';
+    export let message = `{
+      
+    
+    
+    }`;
     export let userMessage = '';
   
     const postMessage = async () => {
@@ -37,7 +41,7 @@
   <main>
     <h1>Post Message to {topic}</h1>
     <div>Topic: <input type="text" bind:value={topic} /></div>
-    <textarea bind:value={message}></textarea>
+    <textarea cols="80" rows="20" bind:value={message}></textarea>
     <button on:click={postMessage}>Post Message</button>
     <p>{userMessage}</p>
   </main>
