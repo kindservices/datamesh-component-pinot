@@ -1,4 +1,4 @@
-name: Build Server
+name: Build Pinot BFF
 
 on:
   pull_request:
@@ -13,7 +13,7 @@ env:
 
 # see https://docs.docker.com/build/ci/github-actions/multi-platform/
 jobs:
-  build-server:
+  build-pinot-bff:
     runs-on: ubuntu-latest
 
     steps:
@@ -22,7 +22,7 @@ jobs:
     - uses: coursier/cache-action@v6.3
     - uses: VirtusLab/scala-cli-setup@v0.1
     - name: Scalafmt check
-      working-directory: ./server
+      working-directory: ./pinot-bff
       run: |
         scala-cli fmt --check . || (
           echo "To format code run"
@@ -30,7 +30,7 @@ jobs:
           exit 1
         )
     - name: Build App
-      working-directory: ./server
+      working-directory: ./pinot-bff
       run: make buildLocally
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -48,7 +48,7 @@ jobs:
       if: github.ref != 'refs/heads/main'
       uses: docker/build-push-action@v5
       with:
-        context: ./server
+        context: ./pinot-bff
         platforms: linux/amd64
         push: true
         tags: ${{ env.REGISTRY_IMAGE }}:build-${{github.run_number}}
@@ -56,7 +56,7 @@ jobs:
       if: github.ref == 'refs/heads/main'
       uses: docker/build-push-action@v5
       with:
-        context: ./server
+        context: ./pinot-bff
         platforms: linux/amd64,linux/arm64
         push: true
         tags: |

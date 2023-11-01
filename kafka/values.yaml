@@ -1,5 +1,0 @@
-kafka:
-  enabled: true
-  replicas: 3
-  persistence:
-    enabled: false
