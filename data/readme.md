@@ -37,8 +37,7 @@ You can see the controller REST API's Swagger file at [localhost:9000/help#/Tabl
 ```bash
 curl -F schemaName=@schema.json  localhost:9000/schemas
 
-curl -i -X POST -H 'Content-Type: application/json' \
-    -d @table.json localhost:9000/tables
+curl -i -X POST -H 'Content-Type: application/json' -d @table.json localhost:9000/tables
 ```
 
 

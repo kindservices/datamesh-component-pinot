@@ -62,16 +62,20 @@
         if (!response.ok) {
           userMessage = 'Failed to post message to Kafka:' + response.statusText;
         } else {
-          userMessage = 'Message posted to Kafka successfully.';
+          userMessage = `Record published to ${topic}: ${JSON.stringify(response, null, 2)}`;
         }
       } catch (error) {
         userMessage = 'Error posting message to Kafka:' + error;
       }
+
+      setTimeout(() => {
+        userMessage = "";
+      }, 1500);
     };
   </script>
   
   <main>
-    <h1>Post Message to {topic}</h1>
+    <h1>Post Message to {kafkaHost}</h1>
     <div class='form'>
       <div class="field">Topic: <input type="text" bind:value={topic} /></div>
       <div class="field">hostname: <input type="text" bind:value={hostname} /></div>
@@ -102,13 +106,8 @@
       <div class="entry">
         <h4>Record:</h4>
       </div>
-      <div class="entry">
-        <!--
-<textarea cols="80" rows="20" bind:value={recordJson} disabled></textarea>
-        -->
-        
+      <div class="entry">        
         <pre style="font-size: 0.7em; font: Courier; line-height: 1em">{recordJson}</pre>
-      
       </div>
       <div class="entry">
         <button on:click={postMessage}>Post Message</button>
