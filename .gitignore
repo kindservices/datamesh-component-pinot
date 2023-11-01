@@ -8,5 +8,5 @@ node_modules
 .DS_Store
 .metals
 .vscode
-# ignore elm chars
+# ignore helm chars
 **/charts/*.tgz

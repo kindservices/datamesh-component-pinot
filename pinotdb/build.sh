@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
+APP=${APP:-pinot-db}
+BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
+    
+
+uninstallArgo() {
+    argocd app delete $APP
+}
 
 installArgo() {
-    APP=${APP:-pinot-db}
-    BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
-    
     # TODO - cange the namespace from 'default' to data-mesh
     argocd app create $APP \
     --repo https://github.com/kindservices/datamesh-component-pinot.git \

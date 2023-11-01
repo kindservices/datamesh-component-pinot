@@ -1,3 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-rest-config
+data:
+  kafka-rest.properties: |
+    proxy.port.8082.tcp=tcp://10.96.196.19:8082
+    proxy.service.host=10.96.196.19
+    bootstrap.servers=kafka-service:9092
+    listeners=http://0.0.0.0:8082
+    proxy.port=tcp://10.96.196.19:8082
+    proxy.port.8082.tcp.addr=10.96.196.19
+    proxy.port.8082.tcp.port=8082
+    proxy.port.8082.tcp.proto=tcp
+    proxy.service.port=8082
+    access.control.allow.methods=GET,POST,PUT,DELETE,OPTIONS
+    access.control.allow.origin=*  
 ---
 apiVersion: v1
 kind: Service
@@ -27,30 +44,27 @@ spec:
       labels:
         app: kafka-rest-proxy
     spec:
+      volumes:
+        - name: kafka-rest-config-volume
+          configMap:
+            name: kafka-rest-config
       containers:
         - name: kafka-rest-proxy
           image: confluentinc/cp-kafka-rest:latest
+          command: ["kafka-rest-start"]
+          args: ["/etc/kafka-rest-override/kafka-rest.properties"]
           resources:
             limits:
               memory: "512Mi"
               cpu: "500m"
+          volumeMounts:
+            - name: kafka-rest-config-volume
+              mountPath: /etc/kafka-rest-override
           env:
             - name: KAFKA_REST_BOOTSTRAP_SERVERS
-              value: "kafka-service:9092"  # Replace with your Kafka bootstrap servers
+              value: "kafka-service:9092"
             - name: KAFKA_REST_LISTENERS
               value: "http://0.0.0.0:8082"
-            # Add more environment variables as needed
+            - name: KAFKA_REST_CONFIG
+              value: /etc/kafka-rest-override/kafka-rest.properties
 
----
-# Optionally, you may create a ConfigMap for additional configuration
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: kafka-rest-proxy-config
-data:
-  # Your additional configuration files or properties go here
-  # For example, you might have a server.properties file
-  server.properties: |
-    # Add your custom Kafka REST Proxy configurations here
-    # For example:
-    # confluent.support.metrics.enable=false

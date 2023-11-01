@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
 thisDir=$(cd `dirname $0` && pwd)
-serverDir="$thisDir/server"
 webDir="$thisDir/web"
 
 
@@ -17,8 +16,8 @@ make installArgo
 popd
 
 
-pushd "$serverDir"
-echo "============== installing server in `pwd` =============="
+pushd "$thisDir/pinot-bff"
+echo "============== installing pinot-bff in `pwd` =============="
 make installArgo
 popd
 

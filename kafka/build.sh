@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
+APP=${APP:-pinot-kafka}
+BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
+
 installArgo() {
-    APP=${APP:-pinot-kafka}
-    BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
-    
     # TODO - cange the namespace from 'default' to data-mesh
     argocd app create $APP \
     --repo https://github.com/kindservices/datamesh-component-pinot.git \
@@ -14,4 +14,8 @@ installArgo() {
     --auto-prune \
     --self-heal \
     --revision $BRANCH
+}
+
+uninstallArgo() {
+    argocd app delete $APP
 }
