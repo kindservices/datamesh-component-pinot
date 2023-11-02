@@ -16,28 +16,12 @@
         "stream.kafka.topic.name": "user-tracking-data",
         "stream.kafka.decoder.class.name": "org.apache.pinot.plugin.stream.kafka.KafkaJSONMessageDecoder",
         "stream.kafka.consumer.factory.class.name": "org.apache.pinot.plugin.stream.kafka20.KafkaConsumerFactory",
-        "stream.kafka.broker.list": "kafka-service:9092",
+        "stream.kafka.broker.list": "kafka-service.default.svc.cluster.local:9092",
         "realtime.segment.flush.threshold.rows": "0",
         "realtime.segment.flush.threshold.time": "24h",
         "realtime.segment.flush.threshold.segment.size": "50M",
         "stream.kafka.consumer.prop.auto.offset.reset": "smallest"
-      },
-      "jsonIndexColumns": [
-        "header_json",
-        "queryParams_json"
-      ]
-    },
-    "ingestionConfig": {
-      "transformConfigs": [
-        {
-          "columnName": "header_json",
-          "transformFunction": "jsonFormat(header)"
-        },
-        {
-          "columnName": "queryParams_json",
-          "transformFunction": "jsonFormat(queryParams)"
-        }
-      ]
+      }
     },
     "metadata": {
       "customConfigs": {}
