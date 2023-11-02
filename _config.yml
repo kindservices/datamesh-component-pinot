@@ -1,0 +1,6 @@
+theme: minima
+title: Kind idea labs
+show_downloads: false
+minima:
+  color_scheme: "midnight"
+  font: "serif"
