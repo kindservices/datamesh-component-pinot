@@ -8,8 +8,12 @@ thisDir=$(cd `dirname $0` && pwd)
 
 
 echo "============== installing kafka =============="
-kubectl apply -f $thisDir/kafka/k8s
+cd ./kafka && make installArgo
 
 
 echo "============== installing pinot in `pwd` =============="
-kubectl apply -f $thisDir/pinotdb/k8s
+# This doesn't work :-(
+# Guess we'll stick w/ Argo for now 💪
+# cd ./pinotdb && make installHelm
+cd ./pinotdb && make installArgo
+

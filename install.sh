@@ -19,7 +19,7 @@ make installArgo
 popd
 
 pushd "$thisDir/kafka-test-widget"
-echo "============== installing pinot-bff in `pwd` =============="
+echo "============== installing kafka-test-widget =============="
 make installArgo
 popd
 

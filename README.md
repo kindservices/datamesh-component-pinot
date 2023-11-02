@@ -30,3 +30,23 @@ The reason being that this is just for demo purposes, and a test/demo widget is 
 # Building Locally
 
 These components all run on Kubernetes, which we assume you have installed (see ['local-kubernetes'](https://github.com/kindservices/local-kubernetes) to get started with that.)
+
+
+# Setting up Kafka / Pinot
+
+With our Kafka and PinotDB running, we need to (1) create a Kafka topic and (2) create a Pinot schema and table
+
+## Creating the topic in Kafka
+
+
+## Creating the table in Pinot
+
+With pinot running, we port-forward to a pinot controller at port 9000 (e.g. use k9s, then shift+f to port-forward)
+
+You can see the controller REST API's Swagger file at [localhost:9000/help#/Table/alterTableStateOrListTableConfig](http://localhost:9000/help#/Table/alterTableStateOrListTableConfig)
+
+```bash
+curl -F schemaName=@schema.json  localhost:9000/schemas
+
+curl -i -X POST -H 'Content-Type: application/json' -d @table.json localhost:9000/tables
+```
