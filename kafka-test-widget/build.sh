@@ -42,12 +42,12 @@ EOL
 }
 
 installArgo() {
-    APP=${APP:-kafkaTestWidget}
+    APP=${APP:-kafka-test-widget}
     BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
 
     echo "creating $APP"
 
-    kubectl create namespace data-mesh > /dev/null
+    kubectl create namespace data-mesh 2> /dev/null
 
     # beast mode :-)
     argocd app create $APP \

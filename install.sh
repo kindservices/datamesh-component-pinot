@@ -3,13 +3,13 @@
 thisDir=$(cd `dirname $0` && pwd)
 
 pushd "$thisDir/kafka"
-echo "============== installing kafka in `pwd` =============="
+echo "============== installing kafka =============="
 make installArgo
 popd
 
 
 pushd "$thisDir/pinotdb"
-echo "============== installing pinot in `pwd` =============="
+echo "============== installing pinot =============="
 make installArgo
 popd
 

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kafka-test-widget-web
-        image: kindservices/kafka-test-widget:latest
+        image: kindservices/datamesh-kafka-test-widget:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80
@@ -47,7 +47,7 @@ spec:
           - name: FREQUENCY_IN_SECONDS
             value: "3"
           - name: BODY
-            value: '{"webComponent":{"jsUrl":"http://kafka-test-widget-web.data-mesh/bundle.js","cssUrl":"http://kafka-test-widget-web.data-mesh/bundle.css","componentId":"<kafka-test-widget param_one=\"some param\"></kafka-test-widget>"},"label":"Kafka Test Widget","tags":{"props":"param_one"}}'
+            value: '{"webComponent":{"jsUrl":"http://kafka-test-widget-web.data-mesh/bundle.js","cssUrl":"http://kafka-test-widget-web.data-mesh/bundle.css","componentId":"<kafka-test-widget ></kafka-test-widget>"},"label":"Kafka Test Widget","tags":{}}'
         resources:
           limits:
             memory: "64Mi"
