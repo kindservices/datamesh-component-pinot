@@ -102,4 +102,12 @@ And then, using our kafka test widget tool, we can see data going into pinot!
 
 ![Data Pinot](./docs/pinot-data.png)
 
-... just too bad about all the nulls ;-)
+# Querying Pinot
+
+The Pinot Broker handles [queries](https://docs.pinot.apache.org/users/api/querying-pinot-using-standard-sql), so we can port-forward (that old chestnut) to localhost:8099, then run e.g.:
+
+```
+curl -H "Content-Type: application/json" -X POST \
+   -d '{"sql":"select * from usertrackingdata limit 100"}' \
+   http://localhost:8099/query/sql
+```
