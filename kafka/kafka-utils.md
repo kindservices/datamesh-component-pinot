@@ -8,7 +8,7 @@ With kafka running, you can use k9s to select a kafka broker and choose `s` to o
 ```
 kafka-topics --create --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1 --topic user-tracking-data
 
-kafka-console-consumer --bootstrap-server localhost:9092 --topic user-tracking-data
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic user-tracking-data 
 ```
 
 And now publish some messages:

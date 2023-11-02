@@ -1,5 +1,5 @@
 {
-    "schemaName": "user-tracking-data",
+    "schemaName": "usertrackingdata",
     "dimensionFieldSpecs": [
       {
         "name": "hostname",
@@ -10,15 +10,11 @@
         "dataType": "STRING"
       },
       {
-        "name": "queryParams",
-        "dataType": "STRING"
-      },
-      {
-        "name": "header_json",
-        "dataType": "STRING"
-      },
-      {
         "name": "queryParams_json",
+        "dataType": "STRING"
+      },
+      {
+        "name": "headers_json",
         "dataType": "STRING"
       }
     ],

@@ -32,7 +32,7 @@ The reason being that this is just for demo purposes, and a test/demo widget is 
 These components all run on Kubernetes, which we assume you have installed (see ['local-kubernetes'](https://github.com/kindservices/local-kubernetes) to get started with that.)
 
 
-# Setting up Kafka / Pinot
+## Setting up Kafka / Pinot
 
 With our Kafka and PinotDB running, we need to:
  * create a Kafka topic and
@@ -56,13 +56,21 @@ Which should display 'Created topic user-tracking-data':
 
 Success! We can type `exit` to get out of the shell.
 
+
+**NOTE:**
+It's also super-helpful to open a shell into a broker for debugging as well. 
+You can see what messages are coming through the topic using the [kafka-console-consumer](https://kafka.apache.org/quickstart) tool:
+```bash
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic user-tracking-data
+```
+
 ### Pushing Test Data Into Kafka
 
 Out kafka deployment also spun up the kafka rest proxy, which our [kafka-test-widget](./kafka-test-widget/README.md) will use to push test data into our new topic.
 
 If we open K9S again, we can choose the kafka-rest-proxy component and use 'shift+f' to [port-forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) the service to our localhost:8082:
 
-![Port Forward](kafka-rest-port-forward.png)
+![Port Forward](./docs/kafka-rest-port-forward.png)
 
 Now we can run our really ugly [kafka-test-widget](./kafka-test-widget/README.md) locally:
 

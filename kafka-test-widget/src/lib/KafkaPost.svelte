@@ -43,6 +43,8 @@
     const postMessage = async () => {
       try {
 
+        // refresh our timestamp
+        record.timestampInEpoch = Date.now();
         const response = await fetch(`${kafkaHost}/topics/${topic}`, {
           method: 'POST',
           headers: {
@@ -50,11 +52,7 @@
           },
           body: JSON.stringify({
             records: [
-              {
-                value: {
-                  content: record,
-                },
-              },
+              { key: `key-${record.timestampInEpoch}`, value: record } 
             ],
           }),
         });
@@ -84,7 +82,7 @@
       
       {#each headers as h, i}
       <div class="field">
-          <a href="#" on:click={e => removeHeader(i)} >remove</a>&nbsp;
+          <a href="void" on:click={e => removeHeader(i)} >remove</a>&nbsp;
         <input class="entry" bind:value={headers[i].key} on:input={e => headers[i].key = e.target.value} >
         = 
        <input class="entry" bind:value={headers[i].value} on:input={e => headers[i].value = e.target.value} >
@@ -95,7 +93,7 @@
       
       {#each queryParams as qp, i}
       <div class="field">
-        <a href="#" on:click={e => removeQueryParam(i)} >remove</a>&nbsp;
+        <a href="void" on:click={e => removeQueryParam(i)} >remove</a>&nbsp;
         <input class="entry" bind:value={queryParams[i].key} on:input={e => queryParams[i].key = e.target.value} >
          = 
         <input class="entry" bind:value={queryParams[i].value} on:input={e => queryParams[i].value = e.target.value} >
@@ -120,11 +118,11 @@
     .entry {
       border : solid 1 blue
     }
-    form {
+    .form {
       display: flex;
       align-items: baseline;
     }
-    field {
+    .field {
       flex-direction: column;
     }
     main {
