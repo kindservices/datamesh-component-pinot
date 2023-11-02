@@ -34,19 +34,64 @@ These components all run on Kubernetes, which we assume you have installed (see 
 
 # Setting up Kafka / Pinot
 
-With our Kafka and PinotDB running, we need to (1) create a Kafka topic and (2) create a Pinot schema and table
+With our Kafka and PinotDB running, we need to:
+ * create a Kafka topic and
+ * create a Pinot schema and table
 
-## Creating the topic in Kafka
 
+### Creating the Kafka topic
+Eventually we'll need this as Infrastructure as Code - perhaps with a K8S Job as part of our Argo deployment or (perhaps better) as an init container for our web test component.
 
-## Creating the table in Pinot
+For now, we'll create the topic manually. With Kafka deployed, select your kafka broker:
 
-With pinot running, we port-forward to a pinot controller at port 9000 (e.g. use k9s, then shift+f to port-forward)
+![K9S Kafka Broker](./docs/k9s-kafka-broker.png)
+
+Then hit 's' to open a shell. With the shell open, run the following command:
+```bash
+kafka-topics --create --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1 --topic user-tracking-data
+```
+Which should display 'Created topic user-tracking-data':
+
+![Create Kafka Topic](./docs/create-kafka-topic.png)
+
+Success! We can type `exit` to get out of the shell.
+
+### Pushing Test Data Into Kafka
+
+Out kafka deployment also spun up the kafka rest proxy, which our [kafka-test-widget](./kafka-test-widget/README.md) will use to push test data into our new topic.
+
+If we open K9S again, we can choose the kafka-rest-proxy component and use 'shift+f' to [port-forward](https://kubernetes.io/docs/tasks/access-application-cluster/port-forward-access-application-cluster/) the service to our localhost:8082:
+
+![Port Forward](kafka-rest-port-forward.png)
+
+Now we can run our really ugly [kafka-test-widget](./kafka-test-widget/README.md) locally:
+
+```bash 
+cd kafka-test-widget && make dev
+```
+
+![Publish Data](./docs/kafka-test-publish.png)
+
+Success!
+
+### Creating the table in Pinot
+
+With out topic in hand and pinot running, we can also port-forward to a pinot controller at port 9000:
+
+![Port forward pinot](./docs/port-forward-pinot.png)
 
 You can see the controller REST API's Swagger file at [localhost:9000/help#/Table/alterTableStateOrListTableConfig](http://localhost:9000/help#/Table/alterTableStateOrListTableConfig)
 
 ```bash
-curl -F schemaName=@schema.json  localhost:9000/schemas
+curl -F schemaName=@data/schema.json  localhost:9000/schemas
 
-curl -i -X POST -H 'Content-Type: application/json' -d @table.json localhost:9000/tables
+curl -i -X POST -H 'Content-Type: application/json' -d @data/table.json localhost:9000/tables
 ```
+
+![Added table](./docs/added-table.png)
+
+And then, using our kafka test widget tool, we can see data going into pinot!
+
+![Data Pinot](./docs/pinot-data.png)
+
+... just too bad about all the nulls ;-)
