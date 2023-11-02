@@ -1,10 +1,9 @@
-# About
-This project was created to just kick the tyres of Apache Pinot, and to present a few  widgets in our ["data mesh"](https://kindservices.github.io/idea-labs/data-mesh/about.html) dashboard.
+[Github Pages](https://kindservices.github.io/datamesh-component-pinot/) | [Github](https://github.com/kindservices/datamesh-component-pinot) | [Kind](https://www.kindservices.co.uk)
 
-## Tracking Pixel
+# About
+This project was created to kick the tyres of Apache Pinot, and to present a few widgets in our ["data mesh"](https://kindservices.github.io/idea-labs/data-mesh/about.html) dashboard.
 
 It simulates a simple "tracking pixel" used for identifying traffic to a website, and then related business queries reporting on that traffic by "the business" (e.g. website owners):
-
 
 For the analytics portion of this demo, we'll want to emulate a "tracking pixel" emplanted on websites:
 
