@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 
 thisDir=$(cd `dirname $0` && pwd)
-webDir="$thisDir/web"
-
 
 pushd "$thisDir/kafka"
 echo "============== installing kafka in `pwd` =============="
@@ -21,7 +19,7 @@ echo "============== installing pinot-bff in `pwd` =============="
 make installArgo
 popd
 
-pushd "$webDir"
+pushd "$thisDir/web"
 echo "============== installing web in `pwd` =============="
 make installArgo
 popd
