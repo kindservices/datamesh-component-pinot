@@ -13,11 +13,16 @@ echo "============== installing pinot in `pwd` =============="
 make installArgo
 popd
 
-
 pushd "$thisDir/pinot-bff"
 echo "============== installing pinot-bff in `pwd` =============="
 make installArgo
 popd
+
+pushd "$thisDir/kafka-test-widget"
+echo "============== installing pinot-bff in `pwd` =============="
+make installArgo
+popd
+
 
 pushd "$thisDir/web"
 echo "============== installing web in `pwd` =============="

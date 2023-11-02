@@ -51,8 +51,8 @@ installArgo() {
 
     # beast mode :-)
     argocd app create $APP \
-    --repo https://github.com/kindservices/kafka-test-widget.git \
-    --path k8s \
+    --repo https://github.com/kindservices/datamesh-component-pinot.git \
+    --path kafka-test-widget/k8s \
     --dest-server https://kubernetes.default.svc \
     --dest-namespace data-mesh \
     --sync-policy automated \
