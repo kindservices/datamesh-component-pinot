@@ -1,11 +1,17 @@
 # Pinot
 
-This piece is for installing pinotDB .
+We are using [Apache Pinot](https://docs.pinot.apache.org) as our OLAP database, which we set up to ingest data from Apache Kafka.
+
+In a real-world example, we would be using avro with the Kafka Schema Registry. Here we're just using json.
+
+You can see our [data model here](.data/readme.md)
+
+
+## Spinning up Pinot
 
 You can use `make installArgo` which will deploy pinot to your cluster:
 
-![Argo Pinot](argoPinot.png)
-
+![Argo Pinot](./docs/argoPinot.png)
 
 # Appendex - the steps I followed
 
