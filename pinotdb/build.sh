@@ -22,7 +22,7 @@ installArgo() {
     --repo https://github.com/kindservices/datamesh-component-pinot.git \
     --path pinotdb/k8s \
     --dest-server https://kubernetes.default.svc \
-    --dest-namespace default \
+    --dest-namespace data-mesh \
     --sync-policy automated \
     --auto-prune \
     --self-heal \
