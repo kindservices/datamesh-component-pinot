@@ -1,5 +1,22 @@
 [Github Pages](https://kindservices.github.io/datamesh-component-pinot/) | [Github](https://github.com/kindservices/datamesh-component-pinot) | [Kind](https://www.kindservices.co.uk)
 
+# Table of Contents
+1. [About](#about)
+2. [Building Locally](#building-locally)
+
+    > [Setting up Kafka](#setting-up-kafka)
+
+    [Creating the Kafka Topic](#creating-the-kafka-topic)
+
+    [Pushing Data Into Our Kafka Topic](#pushing-data-into-our-kafka-topic)
+
+    > [Setting Up Pinot](#setting-up-pinot)
+
+    [Creating a Pinot Table](#creating-a-pinot-table)
+
+    [Querying Pinot](#querying-pinot)
+
+
 # About
 This project was created to kick the tyres of Apache Pinot, and to present a few widgets in our ["data mesh"](https://kindservices.github.io/idea-labs/data-mesh/about.html) dashboard.
 
@@ -31,14 +48,14 @@ The reason being that this is just for demo purposes, and a test/demo widget is 
 These components all run on Kubernetes, which we assume you have installed (see ['local-kubernetes'](https://github.com/kindservices/local-kubernetes) to get started with that.)
 
 
-## Setting up Kafka / Pinot
+## Setting up Kafka
 
 With our Kafka and PinotDB running, we need to:
  * create a Kafka topic and
  * create a Pinot schema and table
 
 
-### Creating the Kafka topic
+### Creating the Kafka Topic
 Eventually we'll need this as Infrastructure as Code - perhaps with a K8S Job as part of our Argo deployment or (perhaps better) as an init container for our web test component.
 
 For now, we'll create the topic manually. With Kafka deployed, select your kafka broker:
@@ -63,7 +80,7 @@ You can see what messages are coming through the topic using the [kafka-console-
 kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic user-tracking-data
 ```
 
-### Pushing Test Data Into Kafka
+### Pushing Data Into Our Kafka Topic
 
 Out kafka deployment also spun up the kafka rest proxy, which our [kafka-test-widget](./kafka-test-widget/README.md) will use to push test data into our new topic.
 
@@ -81,7 +98,12 @@ cd kafka-test-widget && make dev
 
 Success!
 
-### Creating the table in Pinot
+## Setting up Pinot
+
+With Kafka running with our new topic in place and a means to push data into it,
+we can now configure our "sink" for that data - our Apache Pinot Database.
+
+### Creating a Pinot Table
 
 With out topic in hand and pinot running, we can also port-forward to a pinot controller at port 9000:
 
