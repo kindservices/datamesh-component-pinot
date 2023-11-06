@@ -1,0 +1,105 @@
+{
+    "resultTable": {
+        "dataSchema": {
+            "columnNames": [
+                "bucket",
+                "count"
+            ],
+            "columnDataTypes": [
+                "STRING",
+                "LONG"
+            ]
+        },
+        "rows": [
+            [
+                "2023-11-06 14:44:00.000",
+                2
+            ],
+            [
+                "2023-11-06 15:16:00.000",
+                2
+            ],
+            [
+                "2023-11-06 15:08:00.000",
+                2
+            ],
+            [
+                "2023-11-06 15:04:00.000",
+                7
+            ],
+            [
+                "2023-11-06 15:00:00.000",
+                5
+            ],
+            [
+                "2023-11-06 14:32:00.000",
+                2
+            ],
+            [
+                "2023-11-06 15:24:00.000",
+                1
+            ],
+            [
+                "2023-11-06 15:28:00.000",
+                1
+            ]
+        ]
+    },
+    "requestId": "750013389000000025",
+    "stageStats": {
+        "1": {
+            "numBlocks": 1,
+            "numRows": 8,
+            "stageExecutionTimeMs": 10,
+            "stageExecutionUnit": 1,
+            "stageExecWallTimeMs": 10
+        },
+        "2": {
+            "numBlocks": 3,
+            "numRows": 16,
+            "stageExecutionTimeMs": 7,
+            "stageExecutionUnit": 2,
+            "stageExecWallTimeMs": 4,
+            "tableNames": [
+                "usertrackingdata"
+            ]
+        }
+    },
+    "exceptions": [],
+    "numServersQueried": 0,
+    "numServersResponded": 0,
+    "numSegmentsQueried": 1,
+    "numSegmentsProcessed": 1,
+    "numSegmentsMatched": 1,
+    "numConsumingSegmentsQueried": 1,
+    "numConsumingSegmentsProcessed": 0,
+    "numConsumingSegmentsMatched": 0,
+    "numDocsScanned": 22,
+    "numEntriesScannedInFilter": 0,
+    "numEntriesScannedPostFilter": 22,
+    "numGroupsLimitReached": false,
+    "totalDocs": 22,
+    "timeUsedMs": 30,
+    "offlineThreadCpuTimeNs": 0,
+    "realtimeThreadCpuTimeNs": 0,
+    "offlineSystemActivitiesCpuTimeNs": 0,
+    "realtimeSystemActivitiesCpuTimeNs": 0,
+    "offlineResponseSerializationCpuTimeNs": 0,
+    "realtimeResponseSerializationCpuTimeNs": 0,
+    "offlineTotalCpuTimeNs": 0,
+    "realtimeTotalCpuTimeNs": 0,
+    "segmentStatistics": [],
+    "traceInfo": {},
+    "brokerId": "Broker_pinot-db-broker-0.pinot-db-broker-headless.data-mesh.svc.cluster.local_8099",
+    "brokerReduceTimeMs": 9,
+    "numSegmentsPrunedByBroker": 0,
+    "partialResult": false,
+    "numRowsResultSet": 8,
+    "minConsumingFreshnessTimeMs": 1699284517900,
+    "numSegmentsPrunedByServer": 0,
+    "numSegmentsPrunedInvalid": 0,
+    "numSegmentsPrunedByLimit": 0,
+    "numSegmentsPrunedByValue": 0,
+    "explainPlanNumEmptyFilterSegments": 0,
+    "explainPlanNumMatchAllFilterSegments": 0
+}

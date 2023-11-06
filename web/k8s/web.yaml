@@ -47,7 +47,7 @@ spec:
           - name: FREQUENCY_IN_SECONDS
             value: "3"
           - name: BODY
-            value: '{"webComponent":{"jsUrl":"http://pinot-component-web.data-mesh/bundle.js","cssUrl":"http://pinot-component-web.data-mesh/bundle.css","componentId":"<pinot-grid card_title=\"some title\" card_desc=\"some desc\"></pinot-grid>"},"label":"Pinot Grid","tags":{"props":"card_title,card_desc"}}'
+            value: '{"webComponent":{"jsUrl":"http://pinot-component-web.data-mesh/bundle.js","cssUrl":"http://pinot-component-web.data-mesh/bundle.css","componentId":"<pinot-graph></pinot-graph>"},"label":"Pinot Graph","tags":{}}'
         resources:
           limits:
             memory: "64Mi"

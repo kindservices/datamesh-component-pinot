@@ -10,3 +10,4 @@ node_modules
 .vscode
 # ignore helm chars
 **/charts/*.tgz
+target
