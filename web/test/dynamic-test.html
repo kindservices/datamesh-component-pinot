@@ -4,7 +4,8 @@
         function doLoad() {
             var script = document.createElement('script');
             script.src = "http://localhost:3000/bundle.js";
-
+            script.type="module" 
+            
             var css = document.createElement('link');
             css.rel = "stylesheet";
             css.href = "http://localhost:3000/bundle.js";
@@ -12,17 +13,14 @@
             document.head.appendChild(script);
             document.head.appendChild(css);
             
-            
-
             var target = document.getElementById('target');
-            //var myCard = document.createElement('my-card');
-            target.innerHTML = '<my-card card_title="dynamic title" card_desc="dynamic desc"></my-card>';
+            target.innerHTML = '<pinot-graph />';
         }
     </script>
 </head>
 <body>
     <!-- see https://stackoverflow.com/questions/14521108/dynamically-load-js-inside-js -->
-    <h1>Here's your 'my-card' component, exported from ./src/lib/Card.svelte:</h1>
+    <h1>Here's your 'pinot-graph' component:</h1>
     <input type="button" onclick="doLoad()" value="Load"></input>
     <div id="target" >This will be replaced</div>
 </body>

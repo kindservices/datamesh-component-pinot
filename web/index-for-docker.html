@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+  <body>
+    This is a hack. 
+    Our web-component build rollup needs an index.html (I don't fully understand it).
+    The problem is, the index.html which we use for locally building/testing (using `make dev`) 
+    won't work when building a docker image which serves a bundle.js and bundle.css, as we don't
+    want to create a div with a 'webcomponent-app' ID.
+
+    This hack -- until we find a better alternative, which should be easy for somebody who knows what 
+    they're doing -- basically swaps this hacky index-for-docker.html for the index.html we use locally
+    in our Dockerfile
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

@@ -112,9 +112,9 @@ With out topic in hand and pinot running, we can also port-forward to a pinot co
 You can see the controller REST API's Swagger file at [localhost:9000/help#/Table/alterTableStateOrListTableConfig](http://localhost:9000/help#/Table/alterTableStateOrListTableConfig)
 
 ```bash
-curl -F schemaName=@data/schema.json  localhost:9000/schemas
+curl -F schemaName=@pinotdb/schema.json  localhost:9000/schemas
 
-curl -i -X POST -H 'Content-Type: application/json' -d @data/table.json localhost:9000/tables
+curl -i -X POST -H 'Content-Type: application/json' -d @pinotdb/table.json localhost:9000/tables
 ```
 
 ![Added table](./docs/added-table.png)
@@ -131,4 +131,14 @@ The Pinot Broker handles [queries](https://docs.pinot.apache.org/users/api/query
 curl -H "Content-Type: application/json" -X POST \
    -d '{"sql":"select * from usertrackingdata limit 100"}' \
    http://localhost:8099/query/sql
+```
+
+
+# Debugging
+
+To check service connectivity in K8S, you can use BusyBox container:
+```bash
+kubectl run -i --tty --rm debug --image=alpine:latest --restart=Never -- sh
+apk --no-cache add curl
+
 ```
