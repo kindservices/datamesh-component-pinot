@@ -17,5 +17,5 @@ installArgo() {
 }
 
 uninstallArgo() {
-    argocd app delete $APP
+    argocd app delete $APP --cascade
 }

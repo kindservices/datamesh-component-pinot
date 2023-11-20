@@ -2,7 +2,8 @@
 export TAG=${TAG:-local}
 export IMG=${IMG:-kindservices/datamesh-component-pinot-web:$TAG}
 export PORT=${PORT:-3000}
-
+export APP=${APP:-pinot-web}
+export BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
 
 build() {
     echo "Building $IMG..."
@@ -36,10 +37,11 @@ EOL
     echo "Running on port $PORT --- stop server using ./kill.sh"
 }
 
-installArgo() {
-    APP=${APP:-pinot-web}
-    BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
+uninstallArgo() {
+  argocd app delete $APP --cascade
+}
 
+installArgo() {
     echo "creating $APP"
     
     kubectl create namespace data-mesh 2> /dev/null

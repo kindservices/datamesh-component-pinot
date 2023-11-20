@@ -3,6 +3,8 @@ export TAG=${TAG:-local}
 export IMG=${IMG:-kindservices/kafka-test-widget:$TAG}
 export PORT=${PORT:-3000}
 
+export APP=${APP:-kafka-test-widget}
+export BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
 
 build() {
     echo "Building $IMG..."
@@ -41,9 +43,11 @@ EOL
     echo "Running on port $PORT --- stop server using ./kill.sh"
 }
 
+uninstallArgo() {
+    argocd app delete $APP --cascade
+}
+
 installArgo() {
-    APP=${APP:-kafka-test-widget}
-    BRANCH=${BRANCH:-`git rev-parse --abbrev-ref HEAD`}
 
     echo "creating $APP"
 
