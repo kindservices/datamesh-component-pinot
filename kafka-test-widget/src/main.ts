@@ -7,7 +7,6 @@ import App from './App.svelte'
  * so ... 
  */
 
-import KafkaPost from './lib/KafkaPost.svelte'
 
 const app = new App({
   target: document.getElementById('webcomponent-app'),

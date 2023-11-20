@@ -10,18 +10,19 @@ build() {
     docker build --tag $IMG .
     echo "Built $IMG. To run:"
     echo ""
-    echo "docker run -it -p $PORT:80 $IMG"
+    echo "  docker run -it --rm --name app -p $PORT:80 $IMG"
     echo ""
     echo "And open http://localhost:$PORT/bundle.js or http://localhost:$PORT/bundle.css"
 }
 
 dev() {
-    yarn
-    yarn dev
+    which pnpm || (echo "pnpm not installed. Try 'brew install pnpm'?" && exit 1)
+    pnpm install
+    pnpm dev
 }
 
 clean() {
-    yarn cache clean
+    pnpm store prune
 }
 
 run() {

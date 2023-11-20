@@ -7,3 +7,4 @@ The salient points of information we'll want to track are:
 
  You can see how these fields are defined in our pinot DB in the [schema](./schema.json)
 
+Check out the [queries](./queries.md) for how we ask questions of the data.

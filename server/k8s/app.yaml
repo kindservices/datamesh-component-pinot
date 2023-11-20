@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pinot-component-bff-deployment
+  namespace: data-mesh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pinot-component-bff
+  template:
+    metadata:
+      labels:
+        app: pinot-component-bff
+    spec:
+      containers:
+      - name: pinot-component-bff
+        image: kindservices/datamesh-component-pinot-bff:latest-build
+        imagePullPolicy: Always
+        env:
+          - name: PINOT_BROKER_HOSTPORT
+            value: http://pinot-db-broker.data-mesh:8099
+        ports:
+        - containerPort: 8081
+        readinessProbe:
+          tcpSocket:
+            port: 8081
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 3
+          periodSeconds: 3
+        # https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pinot-component-bff-service
+  namespace: data-mesh
+spec:
+  type: LoadBalancer
+  sessionAffinity: None
+  selector:
+    app: pinot-component-bff
+  ports:
+  - name : default
+    port: 8081
+    targetPort: 8081

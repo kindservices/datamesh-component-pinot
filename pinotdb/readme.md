@@ -4,7 +4,7 @@ We are using [Apache Pinot](https://docs.pinot.apache.org) as our OLAP database,
 
 In a real-world example, we would be using avro with the Kafka Schema Registry. Here we're just using json.
 
-You can see our [data model here](.data/readme.md)
+See our [data model](../data/readme.md) or (pinot queries)[../data/queries.md] for more.
 
 
 ## Spinning up Pinot

@@ -1,0 +1,9 @@
+{
+    "sql": "SELECT bucket, COUNT(*) as count FROM (
+    SELECT DATETIMECONVERT(timestampInEpoch,'1:MILLISECONDS:EPOCH',
+           '1:MILLISECONDS:SIMPLE_DATE_FORMAT:yyyy-MM-dd HH:mm:ss.SSS','4:MINUTES') AS bucket,
+           slug
+    FROM usertrackingdata
+) GROUP BY bucket",
+  "queryOptions": "useMultistageEngine=true"
+}
