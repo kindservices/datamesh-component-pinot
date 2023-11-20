@@ -6,6 +6,8 @@ push: build
 	. ./build.sh && push
 installArgo:
 	. ./build.sh && installArgo
+uninstallArgo:
+	. ./build.sh && uninstallArgo
 dev:
 	. ./build.sh && dev
 clean:

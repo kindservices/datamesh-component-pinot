@@ -20,7 +20,7 @@ popd
 
 
 pushd "$thisDir/web"
-echo "============== installing web in `pwd` =============="
+echo "============== installing web =============="
 make installArgo
 popd
 
