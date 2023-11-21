@@ -34,7 +34,7 @@ echo "   +-------------------------------------------------------+"
 echo "   | all installed! You'll need to create a kafka topic    |"
 echo "   | and create the pinot schema/table. See the readme.md  |"
 echo "   | for more - which just tells you to run the following  |"
-echo "   | after port-forwarding kafka and pinot controller.     |"
+echo "   | after port-forwarding kafka and pinot controller...   |"
 echo "   +-------------------------------------------------------+"
 echo
 echo "open a shell to a kafka broker to run:"
