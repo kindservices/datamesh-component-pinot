@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: kafka-test-widget-web
-        image: kindservices/datamesh-kafka-test-widget:latest-build
+        image: kindservices/datamesh-kafka-test-widget:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80

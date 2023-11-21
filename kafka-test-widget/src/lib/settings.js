@@ -1,5 +1,5 @@
 export const kafkaLocalHost = "http://localhost:8082"
-export const kafkaK8SHost = "http://kafka-service:8082"
+export const kafkaK8SHost = "http://kafka-rest-proxy.default.svc.cluster.local:8082"
 const host = window.location.hostname;
 const isLocalHost = host.indexOf("127.0.0.1") >= 0
 
