@@ -7,6 +7,7 @@
     let headers = [];
     let queryParams = [];
     let hostname = "https://some-website.com"
+    let inFlight = false
 
     $: record = {
           timestampInEpoch : Date.now(),
@@ -42,6 +43,7 @@
   
     const postMessage = async () => {
       try {
+        inFlight = true
         // refresh our timestamp
         record.timestampInEpoch = Date.now();
         const response = await publishToKafka(topic, `key-${record.timestampInEpoch}`, record)
@@ -53,20 +55,22 @@
         }
       } catch (error) {
         userMessage = 'Error posting message to Kafka:' + error;
+      } finally {
+        inFlight = false
       }
 
       setTimeout(() => {
         userMessage = "";
-      }, 1500);
+      }, 3000);
     };
   </script>
   
   <main>
     <h1>Post Message</h1>
     <div class='form'>
-      <div class="field">Topic: <input type="text" bind:value={topic} /></div>
-      <div class="field">hostname: <input type="text" bind:value={hostname} /></div>
-      <div class="field">slug: <input type="text" bind:value={slug} /></div>
+      <div class="field"><label class="lbl" for="topic">Topic:</label><input name="topic" id="topic" type="text" bind:value={topic} /></div>
+      <div class="field"><label class="lbl" for="hostname">Hostname:</label><input name="hostname" id="hostname" type="text" bind:value={hostname} /></div>
+      <div class="field"><label class="lbl" for="slug">Slug:</label><input name="slug" id="slug"  type="text" bind:value={slug} /></div>
       <h3>{headers.length} {#if headers.length == 1}Header {:else}Headers{/if} <button on:click={addHeader}>Add Header</button></h3>
       
       {#each headers as h, i}
@@ -97,7 +101,7 @@
         <pre style="font-size: 0.7em; font: Courier; line-height: 1em">{recordJson}</pre>
       </div>
       <div class="entry">
-        <button on:click={postMessage}>Post Message</button>
+        <button disabled={inFlight} on:click={postMessage}>Post Message</button>
       </div>
       <p>{userMessage}</p>
     </div>
@@ -113,6 +117,9 @@
     }
     .field {
       flex-direction: column;
+    }
+    .lbl {
+      width: 600px;
     }
     main {
       align-items: stretch; 
