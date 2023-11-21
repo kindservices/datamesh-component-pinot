@@ -38,7 +38,9 @@ jobs:
         context: ./kafka-test-widget
         platforms: linux/amd64
         push: true
-        tags: ${{ env.REGISTRY_IMAGE }}:build-${{github.run_number}}
+        tags: |
+          ${{ env.REGISTRY_IMAGE }}:latest-build
+          ${{ env.REGISTRY_IMAGE }}:build-${{github.run_number}}
     - name: Optional Push
       if: github.ref == 'refs/heads/main'
       uses: docker/build-push-action@v5
