@@ -1,6 +1,6 @@
 <svelte:options tag="kafka-test-widget" />
 <script type="ts">
-    import {kafkaHost} from './settings'
+    import {publishToKafka} from './kafkaRestClient'
     
     let topic = 'user-tracking-data';
     let slug = '/foo/bar';
@@ -42,20 +42,9 @@
   
     const postMessage = async () => {
       try {
-
         // refresh our timestamp
         record.timestampInEpoch = Date.now();
-        const response = await fetch(`${kafkaHost}/topics/${topic}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/vnd.kafka.json.v2+json',
-          },
-          body: JSON.stringify({
-            records: [
-              { key: `key-${record.timestampInEpoch}`, value: record } 
-            ],
-          }),
-        });
+        const response = await publishToKafka(topic, `key-${record.timestampInEpoch}`, record)
   
         if (!response.ok) {
           userMessage = 'Failed to post message to Kafka:' + response.statusText;
@@ -73,7 +62,7 @@
   </script>
   
   <main>
-    <h1>Post Message to {kafkaHost}</h1>
+    <h1>Post Message</h1>
     <div class='form'>
       <div class="field">Topic: <input type="text" bind:value={topic} /></div>
       <div class="field">hostname: <input type="text" bind:value={hostname} /></div>
@@ -120,21 +109,20 @@
     }
     .form {
       display: flex;
-      align-items: baseline;
+      align-items: center; 
     }
     .field {
       flex-direction: column;
     }
     main {
+      align-items: stretch; 
+      display: flex;
+      flex-direction: column;
       vertical-align: top;
       padding: 1em;
       max-width: 240px;
       margin: 0 auto;
     }
   
-    textarea {
-      width: 100%;
-      margin-bottom: 1em;
-    }
   </style>
   

@@ -55,6 +55,7 @@ With our Kafka and PinotDB running, we need to:
  * create a Pinot schema and table
 
 
+
 ### Creating the Kafka Topic
 Eventually we'll need this as Infrastructure as Code - perhaps with a K8S Job as part of our Argo deployment or (perhaps better) as an init container for our web test component.
 
@@ -97,6 +98,23 @@ cd kafka-test-widget && make dev
 ![Publish Data](./docs/kafka-test-publish.png)
 
 Success!
+
+
+### Testing
+To confirm the messages are actually being published to Kafka, one easy way to do that is by using the `kafka-console-consumer` (read more at the [Kafka quickstart](https://kafka.apache.org/quickstart)).
+
+We can again open a shell into our Kafka broker and then start a console consumer to listen on our topic:
+
+```
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic user-tracking-data
+```
+
+By using the `--from-beginning` flag, we can see the message(s) we've already published above:
+
+
+```bash
+kafka-console-consumer --bootstrap-server localhost:9092 --from-beginning --property print.key=true --topic user-tracking-data 
+```
 
 ## Setting up Pinot
 
