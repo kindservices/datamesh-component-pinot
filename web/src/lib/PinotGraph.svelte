@@ -5,7 +5,7 @@
     import Histogram from './Histogram.svelte'
     import SliderBar from './SliderBar.svelte'
     import { pinotBFFHost } from './settings'
-    import { fetchData } from './pinotClient'
+    import { fetchData, fetchStats } from './pinotClient'
     import { fetchFakeData } from './pinotClientFake'
 
 
@@ -13,13 +13,16 @@
     // TODO - get this from an initial query
     //
     export let earliestDate = LocalDateTime.of(2023, 11, 5, 14, 28)
-    export let latestDate = LocalDateTime.of(2023, 12, 7, 16, 28)
-    let fullTimeSpanInSeconds = Duration.between(earliestDate, latestDate).seconds()
+
+    // this gets updated from our stats call
+    let totalRecords = 0
+    
+    const fullTimeSpanInSeconds = () => Duration.between(earliestDate, LocalDateTime.now()).seconds()
 
     // how many bars do we want to see in our graph?
     // this is our granularity
     export let numberOfSectionsInOurGraph = 15
-    let bucketSizeMinutes = Math.round((fullTimeSpanInSeconds / 60) / numberOfSectionsInOurGraph)
+    let bucketSizeMinutes = Math.round((fullTimeSpanInSeconds() / 60) / numberOfSectionsInOurGraph)
 
     // this value gets updated when the debounced slider is adjusted
     // it is used to make DB queries
@@ -38,8 +41,8 @@
      */
     const updatedTimeRange = (userSelection : SliderRange) : BucketTimeRange => {
         const spread = userSelection.maxPercent - userSelection.minPercent
-        const fromSecondsOffset = Math.round(fullTimeSpanInSeconds * userSelection.minPercent)
-        const toSecondsOffset = Math.round(fullTimeSpanInSeconds * userSelection.maxPercent)
+        const fromSecondsOffset = Math.round(fullTimeSpanInSeconds() * userSelection.minPercent)
+        const toSecondsOffset = Math.round(fullTimeSpanInSeconds() * userSelection.maxPercent)
 
         const from = earliestDate.plusSeconds(fromSecondsOffset)
         const to = earliestDate.plusSeconds(toSecondsOffset)
@@ -47,7 +50,7 @@
         // our bucket-size (e.g. X, where X is the cound per X) is going to be based on:
         // the number of minutes in our slider fraction, divided by the number of values
         // we want to see in our histogram.
-        const numberOfMinutes = fullTimeSpanInSeconds * spread / 60
+        const numberOfMinutes = fullTimeSpanInSeconds() * spread / 60
         bucketSizeMinutes = Math.round(numberOfMinutes / numberOfSectionsInOurGraph)
 
         return {
@@ -79,7 +82,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         refreshData()
-      }, 250);
+      }, 250)
     }
 
     function rangeCompare(a: Range, b: Range, epsilon: number = 1e-6): boolean {
@@ -99,16 +102,35 @@
     // tracking a reactive property as a 'promise' is how we bridge the gap between user-space events (e.g synchronous code)
     // and asynchronous code (e.g. triggering a server call)
     let dataPromise : Promise 
+
+    const refreshStats = () => {
+      console.log(`refreshing stats...`)
+      fetchStats(pinotBFFHost).then((stats) => {
+        /**
+         * stats is e.g.
+         *  { "minEpoch": 1700517293880, "maxEpoch": 1700586174977, "total": 19 }
+         */
+        earliestDate = LocalDateTime.ofEpochSecond(Math.round(stats.minEpoch / 1000), ZoneOffset.UTC)
+        totalRecords = stats.total
+      })
+    }
+
     const refreshData = () => {
       if (rangeCompare(lastRangeQueried, range)) {
         lastRangeQueried = range
         timeRange = updatedTimeRange(range)
         dataPromise = fetchData(pinotBFFHost, timeRange)
+        refreshStats()
       } else {
         console.log("no change")
       }
     }
 
+    function fmt(d8a) {
+      return JSON.stringify(d8a, null, 2)
+    }
+
+    // refreshStats()
 </script>
 
 <main>
@@ -116,6 +138,12 @@
 {#await dataPromise}
   Loading data from {pinotBFFHost}
 {:then data}
+    <div>
+      {totalRecords} total records since {earliestDate}
+    </div>
+    <div>
+      Data is ${fmt(data)}
+    </div>
     <Histogram data={data} height={height * 0.9} {width} />
     <br/>
 {:catch someError}
