@@ -10,10 +10,10 @@
 
 
     // ================================ our time range ================================
-    // this will be specified externally from an initial query
+    // TODO - get this from an initial query
     //
-    export let earliestDate = LocalDateTime.of(2023, 11, 6, 14, 28)
-    export let latestDate = LocalDateTime.of(2023, 11, 7, 16, 28)
+    export let earliestDate = LocalDateTime.of(2023, 11, 5, 14, 28)
+    export let latestDate = LocalDateTime.of(2023, 12, 7, 16, 28)
     let fullTimeSpanInSeconds = Duration.between(earliestDate, latestDate).seconds()
 
     // how many bars do we want to see in our graph?
@@ -61,13 +61,16 @@
     }
 
     let width  = 600
-    let height = 400
+    let height = 800
 
     // our slider range
     let range : Range = {
       minPercent : 0,
       maxPercent : 1
     }
+
+    // keep track of user movements
+    let lastRangeQueried : Range = range
 
     // ======================== debounce code ========================
     // see https://svelte.dev/repl/f55e23d0bf4b43b1a221cf8b88ef9904?version=3.12.1
@@ -76,13 +79,19 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         refreshData()
-      }, 100);
+      }, 500);
+    }
+
+    function rangeCompare(a: Range, b: Range, epsilon: number = 1e-6): boolean {
+      const minDiff = Math.abs(a.minPercent - b.minPercent)
+      const maxDiff = Math.abs(a.maxPercent - b.maxPercent)
+      return minDiff > epsilon || maxDiff > epsilon
     }
 
     // ======================== our callback from the slider controller ========================
     // we 'debounce' the user updates (see above). 
     // when the user stops messing w/ the range, we trigger a 'refreshData()' call
-    function rangeChanged(event) {
+    function onRangeChanged(event) {
       range = { ...range, ...event.detail }
       debounce(range)
     }
@@ -91,11 +100,12 @@
     // and asynchronous code (e.g. triggering a server call)
     let dataPromise : Promise 
     const refreshData = () => {
-      timeRange = updatedTimeRange(range)
-      if (pinotBFFHost == "fake") {
-        dataPromise = fetchFakeData(timeRange)
-      } else {
+      if (rangeCompare(lastRangeQueried, range)) {
+        lastRangeQueried = range
+        timeRange = updatedTimeRange(range)
         dataPromise = fetchData(pinotBFFHost, timeRange)
+      } else {
+        console.log("no change")
       }
     }
 
@@ -106,20 +116,19 @@
 {#await dataPromise}
   Loading data from {pinotBFFHost}
 {:then data}
-    <Histogram data={data} height={height * 0.8} {width} />
+    <Histogram data={data} height={height * 0.9} {width} />
     <br/>
-    <SliderBar on:rangeChanged={rangeChanged} width={width} barWidth={width} />
-
-    <p>Bucket size: {bucketSizeMinutes}</p>
-    Time Range is:
-  <pre>
-    {JSON.stringify(timeRange, null, 2)}
-  </pre>
 {:catch someError}
   Error querying backend at {pinotBFFHost}: {someError.message}
 {/await}
   <br/>
+  <SliderBar on:rangeChanged={onRangeChanged} width={width} barWidth={width} />
 
+  <p>Bucket size: {bucketSizeMinutes}</p>
+  Time Range is:
+<pre>
+  {JSON.stringify(timeRange, null, 2)}
+</pre>
   <button on:click={refreshData}>Refresh</button>
 
 </main>
