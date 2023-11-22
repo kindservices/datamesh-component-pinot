@@ -125,10 +125,6 @@
       }
     }
 
-    function fmt(d8a) {
-      return JSON.stringify(d8a, null, 2)
-    }
-
 </script>
 
 <main>
