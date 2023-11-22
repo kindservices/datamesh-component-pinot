@@ -6,7 +6,6 @@
     import SliderBar from './SliderBar.svelte'
     import { pinotBFFHost } from './settings'
     import { fetchData, fetchStats } from './pinotClient'
-    import { fetchFakeData } from './pinotClientFake'
 
 
     // ================================ our time range ================================
@@ -130,20 +129,19 @@
       return JSON.stringify(d8a, null, 2)
     }
 
-    // refreshStats()
 </script>
 
 <main>
 
+  <div>
+  <label for="numberOfSectionsInOurGraph" ># of histogram buckets:</label><input name="numberOfSectionsInOurGraph" id="numberOfSectionsInOurGraph" type="text" bind:value={numberOfSectionsInOurGraph} />, with {bucketSizeMinutes}min of data in each bucket
+</div>
+<div>
+  {totalRecords} total records since {earliestDate}
+</div>
 {#await dataPromise}
   Loading data from {pinotBFFHost}
 {:then data}
-    <div>
-      {totalRecords} total records since {earliestDate}
-    </div>
-    <div>
-      Data is ${fmt(data)}
-    </div>
     <Histogram data={data} height={height * 0.9} {width} />
     <br/>
 {:catch someError}
@@ -151,12 +149,13 @@
 {/await}
   <br/>
   <SliderBar on:rangeChanged={onRangeChanged} width={width} barWidth={width} />
-
-  <p>Bucket size: {bucketSizeMinutes}</p>
-  Time Range is:
-<pre>
-  {JSON.stringify(timeRange, null, 2)}
-</pre>
-  <button on:click={refreshData}>Refresh</button>
+  <br/>
+<div>
+  Showing {timeRange.fromDate} to {timeRange.toDate}
+</div>
+<br/>
+  <div>
+    <button on:click={refreshData}>Refresh</button>
+  </div>
 
 </main>
