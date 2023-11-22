@@ -6,7 +6,7 @@
     // how much to rotate the x-axis text labels
     export let xAxisTextRotation = 315
   
-    const margin = { gap: 10, colTextHeight: 120, colTextWidth : 60};
+    const margin = { gap: 10, colTextHeight: 160, colTextWidth : 60};
 
     const hack = {
        // a 'fudget factor' hack to align the y axis in the center of the text
@@ -66,7 +66,6 @@
     // the number of labels we show on the y axis
     export let yAxisDegredations = yAxisMaxValue / yAxisIncrements
 
-    // let calculatedHeight = height != 0 && height || (maxValue + (margin.top * 2))
   </script>
   
   {#if data.cols }

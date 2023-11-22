@@ -48,8 +48,6 @@ export const asHistogram = (range : BucketTimeRange, response : ParsedCountRespo
 
   const expectedKeys = sortedHistogramKeys(range, response)
   
-  console.log(`transforming ${response.min} to ${response.max} with ${response.countByTimestamp.size} yields ${expectedKeys.length} keys: ${JSON.stringify(expectedKeys)}`)
-
   const entries = expectedKeys.map(key => {
     const value = response.countByTimestamp.get(key)
     return { label : formatter.format(key), value: value || 0 }
@@ -101,7 +99,6 @@ const sortedHistogramKeys = (range : BucketTimeRange, response : ParsedCountResp
        console.error(`QUERY ERROR: manually filtering out ${key} as key ${timestamp} is not between ${range.fromDate} and ${range.toDate}`)
     } else {
        if (expectedKeys.size < range.numberOfSectionsInOurGraph) {
-         console.log(`adding ${key} as it's between ${range.fromDate} and ${range.toDate}`)
          expectedKeys.add(key)
        } else {
         console.log(`NOT adding ${key} as we're already showing too many results`)

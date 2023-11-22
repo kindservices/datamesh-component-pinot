@@ -61,7 +61,7 @@
     }
 
     let width  = 600
-    let height = 400
+    let height = 800
 
     // our slider range
     let range : Range = {
@@ -79,20 +79,19 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         refreshData()
-      }, 2000);
+      }, 500);
     }
 
     function rangeCompare(a: Range, b: Range, epsilon: number = 1e-6): boolean {
-        const minDiff = Math.abs(a.minPercent - b.minPercent)
-        const maxDiff = Math.abs(a.maxPercent - b.maxPercent)
-        console.log(`${JSON.stringify(lastRangeQueried)} != ${JSON.stringify(range)} --> ${minDiff} vs ${maxDiff}`)
+      const minDiff = Math.abs(a.minPercent - b.minPercent)
+      const maxDiff = Math.abs(a.maxPercent - b.maxPercent)
       return minDiff > epsilon || maxDiff > epsilon
     }
 
     // ======================== our callback from the slider controller ========================
     // we 'debounce' the user updates (see above). 
     // when the user stops messing w/ the range, we trigger a 'refreshData()' call
-    function rangeChanged(event) {
+    function onRangeChanged(event) {
       range = { ...range, ...event.detail }
       debounce(range)
     }
@@ -117,20 +116,19 @@
 {#await dataPromise}
   Loading data from {pinotBFFHost}
 {:then data}
-    <Histogram data={data} height={height * 0.8} {width} />
+    <Histogram data={data} height={height * 0.9} {width} />
     <br/>
-    <SliderBar on:rangeChanged={rangeChanged} width={width} barWidth={width} />
-
-    <p>Bucket size: {bucketSizeMinutes}</p>
-    Time Range is:
-  <pre>
-    {JSON.stringify(timeRange, null, 2)}
-  </pre>
 {:catch someError}
   Error querying backend at {pinotBFFHost}: {someError.message}
 {/await}
   <br/>
+  <SliderBar on:rangeChanged={onRangeChanged} width={width} barWidth={width} />
 
+  <p>Bucket size: {bucketSizeMinutes}</p>
+  Time Range is:
+<pre>
+  {JSON.stringify(timeRange, null, 2)}
+</pre>
   <button on:click={refreshData}>Refresh</button>
 
 </main>
