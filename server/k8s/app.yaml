@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pinot-component-bff
-        image: kindservices/datamesh-component-pinot-bff:latest-build
+        image: kindservices/datamesh-component-pinot-bff:latest
         imagePullPolicy: Always
         env:
           - name: PINOT_BROKER_HOSTPORT

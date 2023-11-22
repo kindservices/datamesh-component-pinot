@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pinot-component-web
-        image: kindservices/datamesh-component-pinot-web:latest-build
+        image: kindservices/datamesh-component-pinot-web:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 80
