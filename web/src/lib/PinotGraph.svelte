@@ -120,8 +120,6 @@
         timeRange = updatedTimeRange(range)
         dataPromise = fetchData(pinotBFFHost, timeRange)
         refreshStats()
-      } else {
-        console.log("no change")
       }
     }
 

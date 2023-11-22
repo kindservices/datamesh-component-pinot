@@ -89,10 +89,19 @@ private def query(pinotBrokerUrl: String, sql : String): requests.Response = {
   println(s"result took ${took}ms:\n\n ${response.text()}\n")
   response
 }
-
 object App extends cask.MainRoutes {
 
   val PinotUrl = env("PINOT_BROKER_HOSTPORT")
+
+  def parseBucketResponse(responseBody : ujson.Value) : ujson.Arr = {
+      val mapped = responseBody("resultTable")("rows").arr.map { row =>
+        ujson.Obj(
+            "bucket" -> row(0),
+            "count" -> row(1)
+        )
+      }
+     ujson.Arr(mapped.toArray:_*)
+  }
 
   def reply(body: ujson.Value = ujson.Null, statusCode: Int = 200) = cask.Response(
     data = body,
@@ -115,16 +124,14 @@ object App extends cask.MainRoutes {
     headers = Seq("Access-Control-Allow-Origin" -> "*", "Content-Type" -> "text/html")
   )
 
-  @cask.get("/check/:fromEpoch/:toEpoch/:minutesPerBucket")
-  def check(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int, params: Seq[String]) = {
-    val url  = params.headOption.getOrElse(PinotUrl)
-    val json = countByBucket(url, fromEpoch, toEpoch, minutesPerBucket)
-    reply(json)
-  }
-
   @cask.get("/count/:fromEpoch/:toEpoch/:minutesPerBucket")
   def countRange(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
     countByBucket(PinotUrl, fromEpoch, toEpoch, minutesPerBucket)
+  }
+
+  @cask.get("/group/:fromEpoch/:toEpoch/:minutesPerBucket")
+  def group(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
+    parseBucketResponse(countByBucket(PinotUrl, fromEpoch, toEpoch, minutesPerBucket))
   }
 
   /**

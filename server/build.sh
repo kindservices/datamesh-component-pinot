@@ -29,6 +29,10 @@ build() {
     scala-cli --power package App.scala -o app.jar --force --assembly
 }
 
+test() {
+    PINOT_BROKER_HOSTPORT=ignored PORT=1234 scala-cli test . 
+}
+
 clean() {
     [[ -f app.jar ]] && rm app.jar || echo ""
 }
