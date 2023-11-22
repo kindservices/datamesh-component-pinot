@@ -10,7 +10,6 @@ export const fetchData = async (pinotBrokerHost : string, range : BucketTimeRang
 
   const response = await queryPinotViaProxy(pinotBrokerHost, fromMillis, toMillis, range.bucketSizeMinutes)
   
-  console.log(`parsing ${JSON.stringify(response, null, 2)}`)
   const parsed = parseCountByBucketResponse(response)
 
   const histogram = asHistogram(range, parsed)
@@ -39,7 +38,7 @@ const queryPinotViaProxy = async (pinotBrokerHost : string, fromMillis : number,
         console.log("throwing for proxy...")
         throw new Error(`POST to ${dashboardHost}/api/proxy failed w/ status ${response.status}`)
       }
-      
+
       const jason = await response.json()
       return jason
     })
