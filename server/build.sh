@@ -33,8 +33,13 @@ clean() {
     [[ -f app.jar ]] && rm app.jar || echo ""
 }
 
-
 run() {
+    # NOTE - the broker, not the controller!
+    PINOT_BROKER_HOSTPORT=http://localhost:8099 PORT=8085 scala-cli App.scala 
+}
+
+
+runInDocker() {
     echo "docker run -it --rm -p $PORT:$PORT -d $IMG"
     id=`docker run -it --rm -p $PORT:$PORT -d $IMG`
     cat > kill.sh <<EOL
