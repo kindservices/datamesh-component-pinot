@@ -12,14 +12,21 @@ export const handle: Handle = async ({ resolve, event }) => {
           'Access-Control-Allow-Origin': '*',
           'Access-Control-Allow-Headers': '*',
         }
-      });
+      })
     }
 
   }
 
-  const response = await resolve(event);
+  const response = await resolve(event)
   if (event.url.pathname.startsWith('/api')) {
-    response.headers.append('Access-Control-Allow-Origin', `*`);
+    const newResponse = new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: new Headers(response.headers),
+    })
+    newResponse.headers.set('Access-Control-Allow-Origin', `*`)
+    return newResponse
+  } else {
+    return response
   }
-  return response;
-};
+}
