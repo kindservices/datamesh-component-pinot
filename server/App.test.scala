@@ -3,7 +3,7 @@
 
 import utest._
 
-object HelloTests extends TestSuite{
+object AppTest extends TestSuite{
 
   val aggResponse =  """
   {
