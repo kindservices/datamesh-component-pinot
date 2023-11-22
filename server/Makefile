@@ -1,5 +1,5 @@
 run:
-	scala-cli App.scala 
+	. ./build.sh && run
 build: clean
 	. ./build.sh && build
 buildDocker:

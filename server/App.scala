@@ -20,6 +20,8 @@ import scala.util.control.NonFatal
 // format: off
 /**
   * This "backend for front-end" for querying Pinot
+  * 
+  * To test locally, have pinot up and running and port-forward the pinot broker on port 9000
   */
 // format: on
 def env(key: String, default: String = null) =
@@ -39,8 +41,6 @@ def countByBucket(
   require(toMillis > 0)
   require(bucketSizeMinutes > 0)
 
-  // NOTE: Don't do this! SQL Injection-tastic.
-  // pinot has a 'proper' Java client, but we'll just use this for now for convenience
   val sql = s"""SELECT bucket, COUNT(*) as count FROM (
                     SELECT DATETIMECONVERT(timestampInEpoch,'1:MILLISECONDS:EPOCH',
                            '1:MILLISECONDS:SIMPLE_DATE_FORMAT:yyyy-MM-dd HH:mm:ss.SSS','${bucketSizeMinutes}:MINUTES') AS bucket,
@@ -50,27 +50,44 @@ def countByBucket(
                     AND  timestampInEpoch <= ${toMillis}
                 ) GROUP BY bucket"""
 
-  val request =
-    ujson.Obj("sql" -> ujson.Str(sql), "queryOptions" -> ujson.Str("useMultistageEngine=true"))
 
-  println(s"count $url using:\n${sql}\n")
-  var started = System.currentTimeMillis
-  val response = requests.post(
-    s"$url/query/sql",
-    data = request,
-    headers = Map(
-      "Content-Type" -> "application/json",
-      "Access-Control-Allow-Origin" -> "*" // TODO - security no-no, but hard-coded for now for port-forwarding/debugging
-    )
-  )
-  var took = System.currentTimeMillis - started
-  println(s"result took ${took}ms:\n\n ${response.text()}\n")
+  val response = query(url, sql)
 
   val jsonStr = response
     .ensuring(_.statusCode == 200, s"${url} returned ${response.statusCode}: $response")
     .text()
 
   ujson.read(jsonStr)
+}
+
+def queryStats(url: String): ujson.Value = {
+  val response = query(url, """select min(timestampInEpoch) as minTimestamp, max(timestampInEpoch) as maxTimestamp, count(*) as totalCount from usertrackingdata limit 1""")
+
+  val jsonStr = response
+    .ensuring(_.statusCode == 200, s"${url} returned ${response.statusCode}: $response")
+    .text()
+
+  ujson.read(jsonStr)
+}
+
+// NOTE: Don't do this! SQL Injection-tastic.
+// pinot has a 'proper' Java client, but we'll just use this for now for convenience
+private def query(pinotBrokerUrl: String, sql : String): requests.Response = {
+  val request = ujson.Obj("sql" -> ujson.Str(sql), "queryOptions" -> ujson.Str("useMultistageEngine=true"))
+
+  println(s"count $pinotBrokerUrl using:\n${sql}\n")
+  val started = System.currentTimeMillis
+  val response = requests.post(
+    s"$pinotBrokerUrl/query/sql",
+    data = request,
+    headers = Map(
+      "Content-Type" -> "application/json",
+      "Access-Control-Allow-Origin" -> "*" // TODO - security no-no, but hard-coded for now for port-forwarding/debugging
+    )
+  )
+  val took = System.currentTimeMillis - started
+  println(s"result took ${took}ms:\n\n ${response.text()}\n")
+  response
 }
 
 object App extends cask.MainRoutes {
@@ -90,6 +107,7 @@ object App extends cask.MainRoutes {
     <ul>
   <li><a href="/health">GET /health</a></li>
   <li>GET /count/:fromEpoch/:toEpoch/:minutesPerBucket <-- query pinot between timestamps</li>
+  <li><a href="/stats">GET /stats<a/> <-- min, max timestamps and total count</li>
   </ul>
   </html>
   """,
@@ -104,14 +122,31 @@ object App extends cask.MainRoutes {
     reply(json)
   }
 
-//
-//  override def defaultHandleNotFound(request: cask.Request) : Response.Raw = reply("not found")
-//
-//  override def defaultHandleMethodNotAllowed(request: cask.Request) : Response.Raw = reply("not allowed")
-
   @cask.get("/count/:fromEpoch/:toEpoch/:minutesPerBucket")
   def countRange(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
     countByBucket(PinotUrl, fromEpoch, toEpoch, minutesPerBucket)
+  }
+
+  /**
+    * @return the min timestamp, max timestamp and total count
+    */
+  @cask.get("/stats")
+  def stats() = reply{
+    /**
+      * returns e.g.
+      * {{{
+      * { "resultTable": { 
+      *      "dataSchema":  ..., 
+      *       "rows": [ 
+      *          [ 1700517293880, 1700586174977, 19 ] 
+      *       ] 
+      *   }
+      * }}}
+      */
+    val response = queryStats(PinotUrl)
+    val firstRow = response("resultTable")("rows")(0)
+    
+    ujson.Obj("minEpoch" -> firstRow(0), "maxEpoch" -> firstRow(1), "total" -> firstRow(2))
   }
 
   // TODO - this isn't a great health check
@@ -126,6 +161,6 @@ object App extends cask.MainRoutes {
   initialize()
 
   println(
-    s""" 🚀 running Pinot BFF on $host:$port {verbose : $verbose, debugMode : $debugMode }  🚀"""
+    s""" 🚀 running Pinot BFF on $host:$port against pinot broker ${PinotUrl}  🚀"""
   )
 }

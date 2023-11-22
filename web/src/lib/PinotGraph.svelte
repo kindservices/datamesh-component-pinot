@@ -79,7 +79,7 @@
       clearTimeout(debounceTimer);
       debounceTimer = setTimeout(() => {
         refreshData()
-      }, 500);
+      }, 250);
     }
 
     function rangeCompare(a: Range, b: Range, epsilon: number = 1e-6): boolean {
