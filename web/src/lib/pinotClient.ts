@@ -1,14 +1,19 @@
 import { parseCountByBucketResponse, formatter } from "./transform"
 import type { HistogramData, ParsedCountResponse } from "./types"
 import { LocalDateTime, ZoneOffset } from '@js-joda/core'
-import { pinotBrokerHost, dashboardHost } from './settings'
+import { dashboardHost } from './settings'
 
-export const fetchData = async (pinotBrokerHost : string, range : BucketTimeRange) : HistogramData => {
+/**
+ * @param pinotBFFHost the URL of our backend
+ * @param range the user range
+ * @returns 
+ */
+export const fetchData = async (pinotBFFHost : string, range : BucketTimeRange) : HistogramData => {
 
   const fromMillis = range.fromEpochSeconds * 1000
   const toMillis = range.toEpochSeconds * 1000
 
-  const response = await queryPinotViaProxy(pinotBrokerHost, fromMillis, toMillis, range.bucketSizeMinutes)
+  const response = await queryPinotViaProxy(pinotBFFHost, fromMillis, toMillis, range.bucketSizeMinutes)
   
   const parsed = parseCountByBucketResponse(response)
 
@@ -17,9 +22,32 @@ export const fetchData = async (pinotBrokerHost : string, range : BucketTimeRang
   return histogram
 }
 
-const queryPinotViaProxy = async (pinotBrokerHost : string, fromMillis : number, toMillis : number, bucketSizeMinutes : number) => {
+export const fetchStats = async (pinotBFFHost : string) => {
 
-    const url = `${pinotBrokerHost}/count/${fromMillis}/${toMillis}/${bucketSizeMinutes}`
+  const proxyRequest = {
+    proxy : `${pinotBFFHost}/stats`,
+    method : "GET",
+    headers : { "Content-Type" : "application/json"},
+    body : null
+  }
+
+  return await fetch(`${dashboardHost}/api/proxy`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(proxyRequest)
+  }).then(async response => {
+    if (!response.ok) {
+      console.error(`Got ${response.status} from ${dashboardHost}/api/proxy for ${pinotBFFHost}/stats`)
+      throw new Error(`POST to ${dashboardHost}/api/proxy failed w/ status ${response.status}`)
+    }
+
+    return await response.json()
+  })
+}
+
+const queryPinotViaProxy = async (pinotBFFHost : string, fromMillis : number, toMillis : number, bucketSizeMinutes : number) => {
+
+    const url = `${pinotBFFHost}/count/${fromMillis}/${toMillis}/${bucketSizeMinutes}`
     
     const proxyRequest = {
       proxy : url,
@@ -33,9 +61,8 @@ const queryPinotViaProxy = async (pinotBrokerHost : string, fromMillis : number,
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(proxyRequest)
     }).then(async response => {
-      console.log(`Got ${response.status} from ${dashboardHost}/api/proxy`)
       if (!response.ok) {
-        console.log("throwing for proxy...")
+        console.error(`Got ${response.status} from ${dashboardHost}/api/proxy for ${url}`)
         throw new Error(`POST to ${dashboardHost}/api/proxy failed w/ status ${response.status}`)
       }
 
@@ -56,8 +83,6 @@ export const asHistogram = (range : BucketTimeRange, response : ParsedCountRespo
   const retValue = {
     cols : entries
   }
-
-  console.log(`${JSON.stringify(expectedKeys)} ==> ${JSON.stringify(entries)}`)
 
   return retValue
 }
@@ -114,10 +139,7 @@ const sortedHistogramKeys = (range : BucketTimeRange, response : ParsedCountResp
 
     while (time <= max) {
       if (expectedKeys.size < range.numberOfSectionsInOurGraph) {
-        console.log(`adding synthetic ${key} as it's between ${range.fromDate} and ${range.toDate}`)
         expectedKeys.add(key)
-      } else {
-        // console.log(`NOT adding synthetic ${key} as we're already showing too many results`)
       }
       key = key.plusMinutes(range.bucketSizeMinutes)
       time = key.toEpochSecond(ZoneOffset.UTC)
