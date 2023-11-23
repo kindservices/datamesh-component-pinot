@@ -6,6 +6,8 @@ buildDocker:
 	. ./build.sh && buildDocker
 push: build
 	. ./build.sh && push
+test:
+	. ./build.sh && test
 pushOnly:
 	. ./build.sh && push
 clean:

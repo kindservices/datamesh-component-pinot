@@ -60,6 +60,25 @@ def countByBucket(
   ujson.read(jsonStr)
 }
 
+def queryRange(
+    url: String,
+    fromMillis: Long,
+    toMillis: Long
+): ujson.Value = {
+  require(fromMillis > 0)
+  require(toMillis > 0)
+
+  val sql = s"""SELECT timestampInEpoch, slug, hostname FROM usertrackingdata WHERE timestampInEpoch >= ${fromMillis} AND timestampInEpoch <= ${toMillis}"""
+
+  val response = query(url, sql)
+
+  val jsonStr = response
+    .ensuring(_.statusCode == 200, s"${url} returned ${response.statusCode}: $response")
+    .text()
+
+  ujson.read(jsonStr)
+}
+
 def queryStats(url: String): ujson.Value = {
   val response = query(url, """select min(timestampInEpoch) as minTimestamp, max(timestampInEpoch) as maxTimestamp, count(*) as totalCount from usertrackingdata limit 1""")
 
@@ -89,10 +108,30 @@ private def query(pinotBrokerUrl: String, sql : String): requests.Response = {
   println(s"result took ${took}ms:\n\n ${response.text()}\n")
   response
 }
-
 object App extends cask.MainRoutes {
 
   val PinotUrl = env("PINOT_BROKER_HOSTPORT")
+
+  def parseBucketResponse(responseBody : ujson.Value) : ujson.Arr = {
+      val mapped = responseBody("resultTable")("rows").arr.map { row =>
+        ujson.Obj(
+            "bucket" -> row(0),
+            "count" -> row(1)
+        )
+      }
+     ujson.Arr(mapped.toArray:_*)
+  }
+
+   def parseSelectResponse(responseBody : ujson.Value) : ujson.Arr = {
+      val mapped = responseBody("resultTable")("rows").arr.map { row =>
+        ujson.Obj(
+            "timestampInEpoch" -> row(0),
+            "slug" -> row(1),
+            "hostname" -> row(2)
+        )
+      }
+     ujson.Arr(mapped.toArray:_*)
+  }
 
   def reply(body: ujson.Value = ujson.Null, statusCode: Int = 200) = cask.Response(
     data = body,
@@ -107,6 +146,8 @@ object App extends cask.MainRoutes {
     <ul>
   <li><a href="/health">GET /health</a></li>
   <li>GET /count/:fromEpoch/:toEpoch/:minutesPerBucket <-- query pinot between timestamps</li>
+  <li>GET /group/:fromEpoch/:toEpoch/:minutesPerBucket <-- query pinot between timestamps with parsed response</li>
+  <li>GET /query/:fromEpoch/:toEpoch <-- simple select between timestamps</li>
   <li><a href="/stats">GET /stats<a/> <-- min, max timestamps and total count</li>
   </ul>
   </html>
@@ -115,16 +156,19 @@ object App extends cask.MainRoutes {
     headers = Seq("Access-Control-Allow-Origin" -> "*", "Content-Type" -> "text/html")
   )
 
-  @cask.get("/check/:fromEpoch/:toEpoch/:minutesPerBucket")
-  def check(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int, params: Seq[String]) = {
-    val url  = params.headOption.getOrElse(PinotUrl)
-    val json = countByBucket(url, fromEpoch, toEpoch, minutesPerBucket)
-    reply(json)
-  }
-
   @cask.get("/count/:fromEpoch/:toEpoch/:minutesPerBucket")
   def countRange(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
     countByBucket(PinotUrl, fromEpoch, toEpoch, minutesPerBucket)
+  }
+
+  @cask.get("/group/:fromEpoch/:toEpoch/:minutesPerBucket")
+  def group(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
+    parseBucketResponse(countByBucket(PinotUrl, fromEpoch, toEpoch, minutesPerBucket))
+  }
+
+  @cask.get("/query/:fromEpoch/:toEpoch")
+  def queryRows(fromEpoch: Long, toEpoch: Long, minutesPerBucket: Int) = reply {
+    parseSelectResponse(queryRange(PinotUrl, fromEpoch, toEpoch))
   }
 
   /**
